@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>PC ZONE PANEL | Digital Store</title>
+
+<style>
+:root {
+  --bg:#080808;
+  --panel:#141414;
+  --panel2:#1c1c1c;
+  --red:#ff2438;
+  --red2:#a90016;
+  --text:#f7f7f7;
+  --muted:#999;
+  --green:#36df9b;
+  --border:#303030;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+button,input,textarea,select {font:inherit}
+button {cursor:pointer}
+button:disabled {opacity:.5;cursor:not-allowed}
+header {
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:15px max(16px,calc((100% - 1150px)/2));
+  background:#0b0b0bf2;border-bottom:1px solid var(--border);
+  backdrop-filter:blur(14px);
+}
+.brand {display:flex;align-items:center;gap:10px;font-size:19px;font-weight:900}
+.logo {
+  width:42px;height:42px;display:grid;place-items:center;
+  border:2px solid var(--red);border-radius:12px;
+  color:var(--red);font-weight:1000;
+  box-shadow:0 0 15px #ff243833;
+}
+.header-actions {display:flex;gap:7px;align-items:center}
+button,.btn {
+  border:1px solid var(--border);border-radius:11px;
+  padding:10px 13px;background:var(--panel2);color:white;
+}
+button:hover {border-color:var(--red)}
+.primary {
+  border:0;background:linear-gradient(110deg,#850013,#ff2038);
+  color:white;font-weight:800;
+}
+.danger {background:#360c12;border-color:#81202d}
+.good {color:var(--green)}
+.muted {color:var(--muted)}
+.container {width:min(1150px,100%);margin:auto;padding:20px 16px 80px}
+.hero {
+  padding:36px 24px;min-height:210px;display:flex;
+  flex-direction:column;justify-content:center;
+  background:
+    radial-gradient(ellipse at 85% 15%,#ff20382e,transparent 45%),
+    linear-gradient(135deg,#1c080b,#0b0b0b 70%);
+  border:1px solid #4b151c;border-radius:22px;
+  overflow:hidden;position:relative;
+}
+.hero h1 {font-size:clamp(28px,5vw,48px);margin:0 0 8px}
+.hero h1 span {color:var(--red)}
+.hero p {color:#bbb;max-width:600px}
+.stats {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin:18px 0 28px;
+}
+.stat,.card,.box {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;
+}
+.stat {padding:17px}
+.stat strong {display:block;color:var(--red);font-size:22px}
+.stat small {color:var(--muted)}
+.section-title {
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin:30px 0 16px;
+}
+.section-title h2 {margin:0;font-size:22px}
+.products {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;
+}
+.card {overflow:hidden;min-width:0}
+.product-image {
+  width:100%;aspect-ratio:1.45;object-fit:cover;
+  display:block;background:#251014;
+}
+.card-body {padding:15px}
+.card h3 {font-size:17px;margin:0 0 8px;overflow-wrap:anywhere}
+.description {font-size:13px;color:var(--muted);min-height:36px}
+.price {font-size:23px;color:#ff7582;font-weight:900;margin:12px 0}
+.stock {font-size:12px;color:var(--green)}
+.card button {width:100%;margin-top:12px}
+.panel-grid {display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box {padding:18px;margin-bottom:15px}
+.box h3 {margin:0 0 15px}
+label {display:block;font-size:13px;color:#ccc;margin:12px 0 6px}
+input,textarea,select {
+  width:100%;background:#090909;color:white;
+  border:1px solid #383838;border-radius:10px;
+  padding:12px;outline:none;
+}
+input:focus,textarea:focus,select:focus {border-color:var(--red)}
+textarea {min-height:85px;resize:vertical}
+.row {display:flex;gap:9px;align-items:center}
+.row>* {min-width:0}
+.row input {flex:1}
+.row button {white-space:nowrap}
+.full {width:100%;margin-top:10px}
+.nav {
+  display:flex;gap:8px;overflow-x:auto;padding:12px 0;
+  scrollbar-width:thin;
+}
+.nav button {white-space:nowrap}
+.nav button.active {background:#6f101b;border-color:var(--red)}
+.page {display:none}
+.page.active {display:block}
+.item {
+  background:#101010;border:1px solid var(--border);
+  border-radius:12px;padding:13px;margin:10px 0;
+  overflow-wrap:anywhere;
+}
+.item-head {display:flex;justify-content:space-between;gap:8px}
+.item small {color:var(--muted)}
+.badge {font-size:12px;color:var(--green)}
+.empty {padding:35px;text-align:center;color:var(--muted)}
+footer {
+  border-top:1px solid var(--border);padding:25px 15px;
+  text-align:center;color:var(--muted);font-size:12px;
+}
+.modal {
+  position:fixed;inset:0;z-index:80;background:#000d;
+  display:none;align-items:center;justify-content:center;padding:16px;
+}
+.modal.show {display:flex}
+.modal-box {
+  width:min(460px,100%);max-height:90vh;overflow:auto;
+  background:#141414;border:1px solid #61202a;
+  border-radius:18px;padding:22px;
+  box-shadow:0 0 50px #ff243822;
+}
+.modal-box h2 {margin-top:0}
+.close {float:right}
+#toast {
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:#222;border:1px solid #555;border-radius:12px;
+  padding:12px 18px;z-index:120;display:none;
+  max-width:90%;text-align:center;
+}
+#toast.show {display:block;animation:pop .25s ease}
+@keyframes pop {from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
+.success-icon {
+  width:76px;height:76px;border-radius:50%;
+  border:3px solid var(--green);color:var(--green);
+  display:grid;place-items:center;font-size:45px;margin:20px auto;
+  animation:success .6s cubic-bezier(.2,1.5,.5,1) both;
+}
+@keyframes success {
+  0%{transform:scale(0) rotate(-35deg);opacity:0}
+  70%{transform:scale(1.18) rotate(8deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+#maintenance {
+  display:none;position:fixed;inset:0;z-index:100;
+  background:radial-gradient(ellipse at 50% 0%,#541019,#090909 65%);
+  align-items:center;justify-content:center;padding:18px;
+}
+.maintenance-box {
+  width:min(520px,100%);text-align:center;padding:25px;
+  border:1px solid #69202a;background:#111e;border-radius:20px;
+  box-shadow:0 0 35px #ff203822;
+}
+.maintenance-box h1 {color:var(--red)}
+#countdown {font-size:clamp(25px,7vw,42px);font-weight:900;color:white}
+.wheel {
+  width:min(280px,70vw);aspect-ratio:1;border-radius:50%;
+  border:7px solid #e8c16a;margin:18px auto;
+  background:conic-gradient(#ff263b 0 45deg,#f7c94c 45deg 90deg,
+    #242424 90deg 135deg,#ff263b 135deg 180deg,
+    #f7c94c 180deg 225deg,#242424 225deg 270deg,
+    #ff263b 270deg 315deg,#f7c94c 315deg 360deg);
+  display:grid;place-items:center;position:relative;
+  transition:transform 3s cubic-bezier(.15,.65,.15,1);
+}
+.wheel:after {
+  content:"PZ";position:absolute;width:62px;height:62px;
+  display:grid;place-items:center;border-radius:50%;
+  background:#111;border:3px solid #e8c16a;font-weight:1000;
+}
+.wheel-number {
+  position:absolute;font-weight:900;color:#111;
+  font-size:13px;transform-origin:center;
+}
+.hidden {display:none!important}
+@media(max-width:760px) {
+  .products {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .stats {grid-template-columns:repeat(2,1fr);gap:9px}
+  .stat {padding:13px}
+  .stat strong {font-size:19px}
+  .hero {padding:25px 18px;min-height:180px}
+  .panel-grid {grid-template-columns:1fr}
+  .header-actions button {padding:9px}
+  .brand {font-size:16px}
+  .logo {width:36px;height:36px}
+}
+@media(max-width:380px) {
+  .products {grid-template-columns:1fr}
+  .header-actions button {font-size:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">PZ</div>
+    <span id="brandName">PC ZONE PANEL</span>
+  </div>
+  <div class="header-actions">
+    <button onclick="openPage('wallet')">💳 <span id="headerBalance">100</span></button>
+    <button onclick="openPage('mail')">✉️ <span id="mailCount">0</span></button>
+    <button onclick="openLogin()">⚙️</button>
+  </div>
+</header>
+
+<main class="container" id="main">
+
+  <section class="hero">
+    <div class="muted">WELCOME TO</div>
+    <h1><span id="heroName">PC ZONE</span> DIGITAL STORE</h1>
+    <p id="heroDescription">ร้านค้าไอเทมดิจิทัล เลือกสินค้า ใช้เครดิตในเว็บไซต์ และรับสินค้าในจดหมายของคุณ</p>
+    <div class="row" style="flex-wrap:wrap">
+      <button class="primary" onclick="scrollToProducts()">🛒 เลือกซื้อสินค้า</button>
+      <button onclick="openPage('wallet')">🔑 เติมเครดิตด้วยคีย์</button>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><small>ผู้เข้าชมเว็บไซต์</small><strong id="visitorCount">1,953,010</strong></div>
+    <div class="stat"><small>สินค้าทั้งหมด</small><strong id="productCount">0</strong></div>
+    <div class="stat"><small>ขายแล้ว</small><strong id="soldCount">3,729,582</strong></div>
+    <div class="stat"><small>เครดิตของคุณ</small><strong id="statsBalance">100</strong></div>
+  </section>
+
+  <div class="nav">
+    <button class="active" data-page="shop" onclick="openPage('shop')">🏠 หน้าร้าน</button>
+    <button data-page="wallet" onclick="openPage('wallet')">🔑 เติมเครดิต</button>
+    <button data-page="mail" onclick="openPage('mail')">✉️ จดหมาย</button>
+    <button data-page="wheel" onclick="openPage('wheel')">🎡 วงล้อ</button>
+    <button data-page="history" onclick="openPage('history')">📋 ประวัติ</button>
+  </div>
+
+  <section class="page active" id="page-shop">
+    <div class="section-title">
+      <h2>🔥 สินค้าทั้งหมด</h2>
+      <span class="muted" id="productSubtitle">Digital Store</span>
+    </div>
+    <div class="products" id="productGrid"></div>
+  </section>
+
+  <section class="page" id="page-wallet">
+    <div class="section-title"><h2>💳 กระเป๋าเครดิต</h2></div>
+    <div class="box">
+      <small class="muted">เครดิตคงเหลือ</small>
+      <div style="font-size:38px;font-weight:900;color:var(--red)">
+        <span id="walletBalance">100</span> เครดิต
+      </div>
+      <p class="muted">เครดิตนี้เป็นเครดิตจำลองภายในเว็บไซต์ ไม่ใช่เงินจริง</p>
+    </div>
+    <div class="box">
+      <h3>🔑 เติมเครดิตด้วยคีย์</h3>
+      <label for="redeemInput">กรอกคีย์รับเครดิต</label>
+      <input id="redeemInput" placeholder="กรอกคีย์ของคุณ" autocomplete="off">
+      <button class="primary full" onclick="redeemKey()">ยืนยันรับเครดิต</button>
+    </div>
+    <div class="box">
+      <h3>🎁 คีย์กิจกรรม</h3>
+      <p class="muted">คีย์กิจกรรมจะปรากฏที่นี่เมื่อผู้ดูแลสร้างและเผยแพร่</p>
+      <div id="eventKeyArea"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-mail">
+    <div class="section-title"><h2>✉️ จดหมายของฉัน</h2></div>
+    <p class="muted">สินค้าที่ซื้อสำเร็จจะปรากฏที่นี่หลังจากระบบนับถอยหลัง</p>
+    <div id="mailList"></div>
+  </section>
+
+  <section class="page" id="page-history">
+    <div class="section-title"><h2>📋 ประวัติรายการ</h2></div>
+    <div id="historyList"></div>
+  </section>
+
+  <section class="page" id="page-wheel">
+    <div class="section-title"><h2>🎡 วงล้อรางวัล</h2></div>
+    <div class="box" style="text-align:center">
+      <p>หมุนวงล้อเพื่อรับเครดิตจำลอง</p>
+      <div class="wheel" id="wheel"></div>
+      <p class="muted" id="wheelInfo">สิทธิ์หมุนวันละ 1 ครั้ง</p>
+      <button class="primary" id="spinButton" onclick="spinWheel()">🎡 หมุนวงล้อ</button>
+      <div id="wheelResult"></div>
+    </div>
+    <div class="box">
+      <h3>รายการรางวัล</h3>
+      <div id="prizeList"></div>
+    </div>
+  </section>
+
+  <section class="page" id="page-admin">
+    <div class="section-title">
+      <h2>⚙️ แผงควบคุมผู้ดูแล</h2>
+      <button onclick="openPage('shop')">กลับหน้าร้าน ↗</button>
+    </div>
+
+    <div class="nav" id="adminTabs">
+      <button class="active" onclick="adminTab('products',this)">สินค้า</button>
+      <button onclick="adminTab('design',this)">ตกแต่ง</button>
+      <button onclick="adminTab('keys',this)">สร้างคีย์</button>
+      <button onclick="adminTab('maintenance',this)">ปิดปรับปรุง</button>
+      <button onclick="adminTab('users',this)">ผู้ใช้งาน</button>
+      <button onclick="adminTab('wheel',this)">วงล้อ</button>
+      <button onclick="adminTab('logs',this)">บันทึก</button>
+      <button onclick="adminTab('settings',this)">ตั้งค่า</button>
+    </div>
+
+    <div id="admin-products" class="admin-panel">
+      <div class="box">
+        <h3 id="productFormTitle">➕ เพิ่มสินค้า</h3>
+        <input id="editProductId" type="hidden">
+        <label>ชื่อสินค้า</label>
+        <input id="pName" placeholder="ชื่อสินค้า">
+        <label>รายละเอียด</label>
+        <textarea id="pDesc" placeholder="รายละเอียดสินค้า"></textarea>
+        <label>ราคาด้วยเครดิต</label>
+        <input id="pPrice" type="number" min="0" value="10">
+        <label>ลิงก์รูปภาพสินค้า</label>
+        <input id="pImage" placeholder="https://...">
+        <label>ลิงก์สำรอง 1</label>
+        <input id="pLink1" placeholder="ลิงก์สินค้าหรือไฟล์">
+        <label>ลิงก์สำรอง 2</label>
+        <input id="pLink2" placeholder="ลิงก์สำรอง">
+        <label>คีย์หรือข้อมูลส่งมอบ 1</label>
+        <input id="pKey1" placeholder="ข้อมูลสินค้า">
+        <label>คีย์หรือข้อมูลส่งมอบ 2</label>
+        <input id="pKey2" placeholder="ข้อมูลสำรอง">
+        <label>จำนวนสต๊อก</label>
+        <input id="pStock" type="number" min="0" value="99">
+        <label><input id="pAutoStock" type="checkbox" style="width:auto"> เติมสต๊อกจำลองอัตโนมัติเมื่อสินค้าเหลือน้อย</label>
+        <button class="primary full" onclick="saveProduct()">💾 บันทึกสินค้า</button>
+        <button class="full" onclick="clearProductForm()">ล้างแบบฟอร์ม</button>
+      </div>
+      <div class="box">
+        <h3>📦 จัดการสินค้าทั้งหมด</h3>
+        <div id="adminProductList"></div>
+      </div>
+    </div>
+
+    <div id="admin-design" class="admin-panel hidden">
+      <div class="box">
+        <h3>🎨 ปรับแต่งหน้าร้าน</h3>
+        <label>ชื่อร้าน</label>
+        <input id="sName" value="PC ZONE PANEL">
+        <label>ข้อความหน้าร้าน</label>
+        <textarea id="sDesc"></textarea>
+        <label>ลิงก์ภาพปกร้าน</label>
+        <input id="sBanner" placeholder="https://...">
+        <label>สีหลัก</label>
+        <input id="sColor" type="color" value="#ff2438">
+        <button class="primary full" onclick="saveDesign()">บันทึกการตกแต่ง</button>
+        <p class="muted">ใช้ลิงก์ภาพเพื่อให้หน้าเว็บโหลดรูปได้จากอุปกรณ์ต่าง ๆ</p>
+      </div>
+    </div>
+
+    <div id="admin-keys" class="admin-panel hidden">
+      <div class="box">
+        <h3>🔑 สร้างคีย์เติมเครดิต</h3>
+        <label>จำนวนคีย์ที่ต้องการสร้าง</label>
+        <input id="keyAmount" type="number" min="1" max="1000" value="10">
+        <label>เครดิตต่อคีย์</label>
+        <input id="keyValue" type="number" min="1" value="100">
+        <label>จำนวนผู้ใช้ต่อคีย์</label>
+        <input id="keyUses" type="number" min="1" max="1000" value="1">
+        <button class="primary full" onclick="generateKeys()">⚡ สร้างคีย์</button>
+        <button class="full" onclick="copyAllKeys()">📋 คัดลอกคีย์ทั้งหมด</button>
+        <button class="full" onclick="exportKeys()">💾 บันทึกคีย์เป็นไฟล์ TXT</button>
+        <div id="generatedKeys"></div>
+      </div>
+      <div class="box">
+        <h3>🎁 สร้างคีย์กิจกรรม</h3>
+        <label>เครดิตรางวัล</label>
+        <input id="eventValue" type="number" min="1" value="50">
+        <label>ระยะเวลากิจกรรม (ชั่วโมง)</label>
+        <input id="eventHours" type="number" min="1" value="2">
+        <button class="primary full" onclick="createEventKey()">สร้างคีย์กิจกรรม</button>
+        <div id="adminEventInfo"></div>
+      </div>
+    </div>
+
+    <div id="admin-maintenance" class="admin-panel hidden">
+      <div class="box">
+        <h3>🚧 ระบบปิดปรับปรุงเว็บไซต์</h3>
+        <label>ข้อความแจ้งลูกค้า</label>
+        <textarea id="mMessage">เว็บไซต์กำลังปิดปรับปรุง ขออภัยในความไม่สะดวก</textarea>
+        <label>ระยะเวลา</label>
+        <div class="row">
+          <input id="mDuration" type="number" min="1" value="5">
+          <select id="mUnit">
+            <option value="1">วินาที</option>
+            <option value="60">นาที</option>
+            <option value="3600">ชั่วโมง</option>
+            <option value="86400">วัน</option>
+            <option value="2592000">เดือน (30 วัน)</option>
+            <option value="31536000">ปี (365 วัน)</option>
+          </select>
+        </div>
+        <label>รหัสลับสำหรับข้ามหน้าปรับปรุง</label>
+        <input id="mSecret" type="password" placeholder="กำหนดรหัสลับ">
+        <button class="primary full" onclick="startMaintenance()">เปิดโหมดปิดปรับปรุงทันที</button>
+        <button class="full" onclick="endMaintenance()">ปิดโหมดปรับปรุง</button>
+        <p id="maintenanceStatus" class="muted"></p>
+      </div>
+    </div>
+
+    <div id="admin-users" class="admin-panel hidden">
+      <div class="box">
+        <h3>👥 จัดการผู้ใช้งาน</h3>
+        <label>ชื่อผู้ใช้ที่ต้องการค้นหา</label>
+        <input id="userSearch" placeholder="ค้นหาชื่อผู้ใช้">
+        <button class="full" onclick="renderUsers()">ค้นหา</button>
+        <div id="adminUserList"></div>
+      </div>
+      <div class="box">
+        <h3>⛔ แบนผู้ใช้</h3>
+        <label>ชื่อผู้ใช้</label>
+        <input id="banName" placeholder="ชื่อผู้ใช้">
+        <label>ระยะเวลาแบน (วินาที)</label>
+        <input id="banSeconds" type="number" min="1" value="100">
+        <button class="danger full" onclick="banUser()">ยืนยันแบนผู้ใช้</button>
+      </div>
+    </div>
+
+    <div id="admin-wheel" class="admin-panel hidden">
+      <div class="box">
+        <h3>🎡 ตั้งค่ารางวัลวงล้อ</h3>
+        <label>ชื่อรางวัล</label>
+        <input id="prizeName" placeholder="เช่น 100 เครดิต">
+        <label>จำนวนเครดิต</label>
+        <input id="prizeValue" type="number" min="0" value="100">
+        <label>โอกาสได้รับ (%)</label>
+        <input id="prizeChance" type="number" min="0" max="100" step="0.01" value="10">
+        <button class="primary full" onclick="addPrize()">เพิ่มรางวัล</button>
+        <label>สิทธิ์หมุนต่อวัน</label>
+        <input id="dailySpins" type="number" min="1" value="1">
+        <button class="full" onclick="saveSpinSettings()">บันทึกจำนวนสิทธิ์</button>
+        <div id="adminPrizeList"></div>
+      </div>
+    </div>
+
+    <div id="admin-logs" class="admin-panel hidden">
+      <div class="box">
+        <h3>📋 บันทึกการใช้งาน</h3>
+        <button class="full" onclick="renderLogs()">รีเฟรชบันทึก</button>
+        <button class="full" onclick="exportLogs()">ส่งออกบันทึก</button>
+        <div id="adminLogsList"></div>
+      </div>
+    </div>
+
+    <div id="admin-settings" class="admin-panel hidden">
+      <div class="box">
+        <h3>⚙️ ตั้งค่าระบบ</h3>
+        <label>เปลี่ยนรหัสแอดมิน</label>
+        <input id="newAdminPassword" type="password" placeholder="รหัสใหม่">
+        <button class="primary full" onclick="changeAdminPassword()">เปลี่ยนรหัสแอดมิน</button>
+        <hr style="border-color:var(--border);margin:22px 0">
+        <label>ชื่อผู้ใช้สำหรับเครื่องนี้</label>
+        <input id="currentUsername" placeholder="เช่น Player01">
+        <button class="full" onclick="setUsername()">บันทึกชื่อผู้ใช้</button>
+        <label>เครดิตเริ่มต้นสำหรับผู้ใช้ใหม่</label>
+        <input id="startingCredits" type="number" min="0" value="100">
+        <button class="full" onclick="saveStartingCredits()">บันทึกเครดิตเริ่มต้น</button>
+        <button class="danger full" onclick="resetDemo()">รีเซ็ตข้อมูลทดลองทั้งหมด</button>
+        <p class="muted">ระบบนี้เป็นเดโมแบบเครื่องเดียว การเปลี่ยนรหัสใน HTML ไม่ได้ทำให้ระบบปลอดภัยระดับเซิร์ฟเวอร์</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div id="footerName">PC ZONE PANEL</div>
+  <p>Digital Store • เครดิตจำลองภายในเว็บไซต์</p>
+</footer>
+
+<!-- Login modal -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('loginModal')">✕</button>
+    <h2>🔐 เข้าสู่ระบบผู้ดูแล</h2>
+    <label>รหัสผ่าน</label>
+    <input id="adminPasswordInput" type="password" placeholder="กรอกรหัสผ่าน" autocomplete="current-password">
+    <button class="primary full" onclick="loginAdmin()">ยืนยัน</button>
+    <p class="muted">รหัสผ่านจะไม่แสดงบนหน้าร้าน</p>
+  </div>
+</div>
+
+<!-- Purchase modal -->
+<div class="modal" id="purchaseModal">
+  <div class="modal-box" style="text-align:center">
+    <h2 id="purchaseTitle">ยืนยันการสั่งซื้อ</h2>
+    <p id="purchaseDescription"></p>
+    <div style="font-size:25px;font-weight:900;color:var(--red)" id="purchasePrice"></div>
+    <p class="muted" id="purchaseCountdown">ตรวจสอบรายการก่อนยืนยัน</p>
+    <button class="primary full" id="confirmPurchaseButton" onclick="confirmPurchase()">ยืนยันการซื้อ</button>
+    <button class="full" onclick="cancelPurchase()">ยกเลิก</button>
+    <div id="purchaseStatus"></div>
+  </div>
+</div>
+
+<!-- Maintenance overlay -->
+<div id="maintenance">
+  <div class="maintenance-box">
+    <div style="font-size:48px">🚧</div>
+    <h1>ปิดปรับปรุงเว็บไซต์</h1>
+    <p id="maintenanceMessage"></p>
+    <p class="muted">เว็บไซต์จะกลับมาให้บริการในอีก</p>
+    <div id="countdown">00:00:00</div>
+    <p class="muted">กรุณารอสักครู่</p>
+    <button onclick="openMaintenanceLogin()">🔐 เข้าสู่ระบบผู้ดูแล</button>
+    <div id="maintenanceLoginArea" class="hidden" style="text-align:left;margin-top:15px">
+      <label>รหัสลับ</label>
+      <input id="maintenancePassword" type="password" placeholder="กรอกรหัสลับ">
+      <button class="primary full" onclick="bypassMaintenance()">ยืนยัน</button>
+      <div id="maintenanceLoginStatus" style="text-align:center;margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="successModal">
+  <div class="modal-box" style="text-align:center">
+    <div class="success-icon">✓</div>
+    <h2 id="successTitle">สำเร็จ!</h2>
+    <p id="successText">ดำเนินการเรียบร้อยแล้ว</p>
+    <button class="primary full" onclick="closeModal('successModal')">ตกลง</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+/*
+  PC ZONE PANEL — Single-file demo
+
+  ข้อมูลถูกเก็บใน localStorage ของเบราว์เซอร์
+  ไม่ใช่ฐานข้อมูลออนไลน์ที่ซิงก์ข้ามอุปกรณ์
+  รหัสแอดมินใน JavaScript ไม่ใช่การรักษาความปลอดภัยที่แท้จริง
+*/
+
+const DBKEY = "PC_ZONE_PANEL_DEMO_V1";
+const DEFAULT_ADMIN_PASSWORD = "admin123";
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,9);
+}
+function randomKey(length=20) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  const bytes = new Uint8Array(length);
+  if (crypto && crypto.getRandomValues) crypto.getRandomValues(bytes);
+  else for(let i=0;i<length;i++) bytes[i]=Math.random()*256;
+  return Array.from(bytes,b=>chars[b%chars.length]).join("");
+}
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+function money(value) {
+  return Math.max(0,Number(value)||0).toLocaleString("th-TH");
+}
+function defaultData() {
+  return {
+    settings:{
+      shopName:"PC ZONE PANEL",
+      heroDescription:"ร้านค้าไอเทมดิจิทัล เลือกสินค้า ใช้เครดิตในเว็บไซต์ และรับสินค้าในจดหมายของคุณ",
+      banner:"",
+      color:"#ff2438",
+      adminPassword:DEFAULT_ADMIN_PASSWORD,
+      startingCredits:100,
+      dailySpins:1,
+      visitorCount:1953010,
+      soldCount:3729582,
+      autoStock:false
+    },
+    products:[
+      {id:uid(),name:"กล่องสุ่มไอเทม",desc:"สินค้าดิจิทัลตัวอย่างสำหรับทดลองระบบ",price:39,image:"",link1:"",link2:"",key1:"",key2:"",stock:99,autoStock:false},
+      {id:uid(),name:"ไอเทมพิเศษ",desc:"รายละเอียดสินค้าแก้ไขได้ในหน้าแอดมิน",price:50,image:"",link1:"",link2:"",key1:"",key2:"",stock:99,autoStock:false},
+      {id:uid(),name:"แพ็กเกจ VIP",desc:"ตัวอย่างสินค้า สามารถเปลี่ยนชื่อและราคาได้",price:100,image:"",link1:"",link2:"",key1:"",key2:"",stock:99,autoStock:false}
+    ],
+    wallets:{},
+    users:{},
+    keys:[],
+    mail:[],
+    history:[],
+    logs:[],
+    wheelPrizes:[
+      {id:uid(),name:"0 เครดิต",value:0,chance:50},
+      {id:uid(),name:"10 เครดิต",value:10,chance:25},
+      {id:uid(),name:"50 เครดิต",value:50,chance:15},
+      {id:uid(),name:"100 เครดิต",value:100,chance:8},
+      {id:uid(),name:"500 เครดิต",value:500,chance:2}
+    ],
+    wheelHistory:{},
+    maintenance:{active:false,until:0,message:"เว็บไซต์กำลังปิดปรับปรุง ขออภัยในความไม่สะดวก",secret:""},
+    event:{key:"",value:0,until:0,claimed:[]},
+    bans:{}
+  };
+}
+function loadDB() {
+  try {
+    const saved=localStorage.getItem(DBKEY);
+    if(!saved) return defaultData();
+    const d=JSON.parse(saved);
+    const base=defaultData();
+    return {...base,...d,
+      settings:{...base.settings,...d.settings},
+      maintenance:{...base.maintenance,...d.maintenance},
+      event:{...base.event,...d.event}
+    };
+  } catch(e) {
+    return defaultData();
+  }
+}
+let db=loadDB();
+let currentUser=localStorage.getItem("PZ_USERNAME")||"Player01";
+let adminLoggedIn=false;
+let selectedProduct=null;
+let purchaseTimer=null;
+let toastTimer=null;
+let wheelBusy=false;
+let maintenanceBypass=false;
+
+function saveDB() {
+  try {
+    localStorage.setItem(DBKEY,JSON.stringify(db));
+    return true;
+  } catch(e) {
+    toast("บันทึกไม่สำเร็จ พื้นที่จัดเก็บอาจเต็ม");
+    return false;
+  }
+}
+function logAction(type,detail,user=currentUser) {
+  db.logs.unshift({id:uid(),type,detail:String(detail),user,time:Date.now()});
+  db.logs=db.logs.slice(0,2000);
+  saveDB();
+}
+function toast(message) {
+  const el=document.getElementById("toast");
+  el.textContent=message;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),2600);
+}
+function sound() {
+  try {
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(!AudioCtx)return;
+    const ctx=new AudioCtx();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.frequency.value=740;
+    gain.gain.setValueAtTime(.035,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.08);
+    osc.start();osc.stop(ctx.currentTime+.08);
+  } catch(e) {}
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+function openModal(id) {
+  document.getElementById(id).classList.add("show");
+}
+function showSuccess(title,message) {
+  document.getElementById("successTitle").textContent=title;
+  document.getElementById("successText").textContent=message;
+  openModal("successModal");
+  sound();
+}
+function getBalance(user=currentUser) {
+  if(db.wallets[user]===undefined) {
+    db.wallets[user]=Number(db.settings.startingCredits)||0;
+    db.users[user]={name:user,created:Date.now(),device:navigator.userAgent.slice(0,180)};
+    saveDB();
+  }
+  return Number(db.wallets[user])||0;
+}
+function changeBalance(user,amount) {
+  const next=getBalance(user)+Number(amount);
+  if(next<0) return false;
+  db.wallets[user]=next;
+  saveDB();
+  renderHeader();
+  return true;
+}
+function setUsername() {
+  const value=document.getElementById("currentUsername").value.trim();
+  if(!/^[a-zA-Z0-9_\-\u0E00-\u0E7F]{2,30}$/.test(value)) {
+    return toast("ชื่อผู้ใช้ต้องมี 2–30 ตัวอักษร");
+  }
+  currentUser=value;
+  localStorage.setItem("PZ_USERNAME",value);
+  getBalance();
+  logAction("เปลี่ยนชื่อผู้ใช้",value);
+  renderAll();
+  toast("บันทึกชื่อผู้ใช้แล้ว");
+}
+function renderHeader() {
+  const b=getBalance();
+  document.getElementById("headerBalance").textContent=money(b);
+  document.getElementById("walletBalance").textContent=money(b);
+  document.getElementById("statsBalance").textContent=money(b);
+  document.getElementById("mailCount").textContent=db.mail.filter(m=>m.user===currentUser&&!m.read).length;
+  document.getElementById("productCount").textContent=db.products.length;
+  document.getElementById("visitorCount").textContent=money(db.settings.visitorCount);
+  document.getElementById("soldCount").textContent=money(db.settings.soldCount);
+}
+function openPage(page) {
+  if(page==="admin"&&!adminLoggedIn) return openLogin();
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const target=document.getElementById("page-"+page);
+  if(target)target.classList.add("active");
+  document.querySelectorAll(".nav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  if(page==="mail")renderMail();
+  if(page==="history")renderHistory();
+  if(page==="wallet")renderEvent();
+  if(page==="wheel")renderWheel();
+  if(page==="admin")renderAdmin();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function scrollToProducts() {
+  openPage("shop");
+  document.getElementById("productGrid").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderProducts() {
+  const grid=document.getElementById("productGrid");
+  if(!db.products.length) {
+    grid.innerHTML='<div class="empty">ยังไม่มีสินค้า</div>';
+    return;
+  }
+  grid.innerHTML=db.products.map(p=>{
+    const img=p.image
+      ? `<img class="product-image" src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'">`
+      : `<div class="product-image" style="display:grid;place-items:center;font-size:55px">🎮</div>`;
+    return `<article class="card">
+      ${img}
+      <div class="card-body">
+        <h3>${esc(p.name)}</h3>
+        <div class="description">${esc(p.desc)}</div>
+        <div class="price">${money(p.price)} เครดิต</div>
+        <div class="stock">● ${Number(p.stock)>0?"พร้อมจำหน่าย":"สินค้าหมด"}</div>
+        <button class="primary" onclick="beginPurchase('${p.id}')" ${Number(p.stock)<=0?"disabled":""}>🛒 สั่งซื้อ</button>
+      </div>
+    </article>`;
+  }).join("");
+}
+function beginPurchase(id) {
+  const p=db.products.find(x=>x.id===id);
+  if(!p)return;
+  if(isBanned(currentUser))return showBanScreen();
+  if(Number(p.stock)<=0)return toast("สินค้าหมด");
+  if(getBalance()<Number(p.price))return toast("เครดิตไม่เพียงพอ กรุณาเติมเครดิต");
+  selectedProduct=p;
+  document.getElementById("purchaseTitle").textContent="ยืนยันการสั่งซื้อ";
+  document.getElementById("purchaseDescription").textContent=p.name;
+  document.getElementById("purchasePrice").textContent=money(p.price)+" เครดิต";
+  document.getElementById("purchaseCountdown").textContent="ตรวจสอบรายการก่อนยืนยัน";
+  document.getElementById("purchaseStatus").innerHTML="";
+  document.getElementById("confirmPurchaseButton").disabled=false;
+  openModal("purchaseModal");
+}
+function cancelPurchase() {
+  clearInterval(purchaseTimer);
+  closeModal("purchaseModal");
+  selectedProduct=null;
+}
+function confirmPurchase() {
+  if(!selectedProduct)return;
+  const p=db.products.find(x=>x.id===selectedProduct.id);
+  if(!p)return toast("ไม่พบสินค้า");
+  if(getBalance()<Number(p.price))return toast("เครดิตไม่เพียงพอ");
+  if(Number(p.stock)<=0)return toast("สินค้าหมด");
+  const btn=document.getElementById("confirmPurchaseButton");
+  btn.disabled=true;
+  let seconds=5;
+  document.getElementById("purchaseCountdown").textContent="กำลังตรวจสอบ "+seconds+" วินาที";
+  sound();
+  clearInterval(purchaseTimer);
+  purchaseTimer=setInterval(()=>{
+    seconds--;
+    document.getElementById("purchaseCountdown").textContent=
+      seconds>0?"กำลังตรวจสอบ "+seconds+" วินาที":"กำลังดำเนินการ...";
+    if(seconds<=0) {
+      clearInterval(purchaseTimer);
+      completePurchase(p.id);
+    }
+  },1000);
+}
+function completePurchase(id) {
+  const p=db.products.find(x=>x.id===id);
+  if(!p||getBalance()<Number(p.price)||Number(p.stock)<=0) {
+    document.getElementById("purchaseStatus").innerHTML='<div style="color:#ff5868">✕ รายการไม่สำเร็จ</div>';
+    document.getElementById("confirmPurchaseButton").disabled=false;
+    return;
+  }
+  changeBalance(currentUser,-Number(p.price));
+  if(!p.autoStock)p.stock=Math.max(0,Number(p.stock)-1);
+  else p.stock=99;
+  const mail={
+    id:uid(),user:currentUser,productId:p.id,
+    productName:p.name,price:Number(p.price),
+    link1:p.link1||"",link2:p.link2||"",
+    key1:p.key1||"",key2:p.key2||"",
+    time:Date.now(),read:false
+  };
+  db.mail.unshift(mail);
+  db.history.unshift({id:uid(),user:currentUser,type:"ซื้อสินค้า",detail:p.name,amount:-Number(p.price),time:Date.now()});
+  db.settings.soldCount++;
+  logAction("ซื้อสินค้า",p.name+" ราคา "+p.price+" เครดิต");
+  saveDB();
+  renderAll();
+  document.getElementById("purchaseCountdown").textContent="สำเร็จ!";
+  document.getElementById("purchaseStatus").innerHTML='<div class="success-icon">✓</div><b class="good">สั่งซื้อสำเร็จ</b><p>สินค้าเข้าจดหมายแล้ว</p>';
+  sound();
+  setTimeout(()=>{
+    closeModal("purchaseModal");
+    showSuccess("สั่งซื้อสำเร็จ","สินค้า "+p.name+" ถูกส่งไปยังจดหมายของคุณแล้ว");
+    openPage("mail");
+  },900);
+  selectedProduct=null;
+}
+function renderMail() {
+  const list=document.getElementById("mailList");
+  const mails=db.mail.filter(m=>m.user===currentUser);
+  if(!mails.length) {
+    list.innerHTML='<div class="empty">📭 ยังไม่มีสินค้าในจดหมาย</div>';
+    renderHeader();return;
+  }
+  list.innerHTML=mails.map(m=>{
+    const value=(label,data,key)=>data?`<div class="item">
+      <small>${label}</small><div style="margin:8px 0;overflow-wrap:anywhere">${esc(data)}</div>
+      <button onclick="copyText('${key}','${m.id}')">📋 คัดลอก${label}</button>
+    </div>`:"";
+    return `<div class="box">
+      <div class="item-head"><b>📦 ${esc(m.productName)}</b><span class="badge">✓ ส่งแล้ว</span></div>
+      <small>${new Date(m.time).toLocaleString("th-TH")} • ${money(m.price)} เครดิต</small>
+      ${value("ลิงก์สินค้า 1",m.link1,"link1")}
+      ${value("ลิงก์สินค้า 2",m.link2,"link2")}
+      ${value("คีย์สินค้า 1",m.key1,"key1")}
+      ${value("คีย์สินค้า 2",m.key2,"key2")}
+      <button class="full" onclick="copyAllMail('${m.id}')">📋 คัดลอกข้อมูลสินค้าทั้งหมด</button>
+      <button class="full" onclick="markMailRead('${m.id}')">${m.read?"อ่านแล้ว":"ทำเครื่องหมายว่าอ่านแล้ว"}</button>
+    </div>`;
+  }).join("");
+  renderHeader();
+}
+function markMailRead(id) {
+  const m=db.mail.find(x=>x.id===id&&x.user===currentUser);
+  if(m)m.read=true;
+  saveDB();renderMail();renderHeader();
+}
+async function copyText(key,id) {
+  const m=db.mail.find(x=>x.id===id&&x.user===currentUser);
+  if(!m)return;
+  await copyToClipboard(m[key]||"");
+}
+async function copyAllMail(id) {
+  const m=db.mail.find(x=>x.id===id&&x.user===currentUser);
+  if(!m)return;
+  const text=[m.link1,m.link2,m.key1,m.key2].filter(Boolean).join("\n");
+  if(!text)return toast("สินค้านี้ไม่มีลิงก์หรือคีย์");
+  await copyToClipboard(text);
+}
+async function copyToClipboard(text) {
+  if(!text)return toast("ไม่มีข้อมูลให้คัดลอก");
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("คัดลอกแล้ว");
+  } catch(e) {
+    const t=document.createElement("textarea");
+    t.value=text;document.body.appendChild(t);t.select();
+    const ok=document.execCommand("copy");t.remove();
+    toast(ok?"คัดลอกแล้ว":"คัดลอกไม่สำเร็จ");
+  }
+}
+function renderHistory() {
+  const el=document.getElementById("historyList");
+  const rows=db.history.filter(x=>x.user===currentUser);
+  el.innerHTML=rows.length?rows.map(x=>`<div class="item">
+    <b>${esc(x.type)}</b><p>${esc(x.detail)}</p>
+    <small>${new Date(x.time).toLocaleString("th-TH")}</small>
+    <div>${Number(x.amount)>0?"+":""}${money(x.amount)} เครดิต</div>
+  </div>`).join(""):'<div class="empty">ยังไม่มีประวัติ</div>';
+}
+function redeemKey() {
+  const input=document.getElementById("redeemInput");
+  const key=input.value.trim();
+  if(!key)return toast("กรุณากรอกคีย์");
+  if(isBanned(currentUser))return showBanScreen();
+  const found=db.keys.find(k=>k.key===key&&k.remaining>0&&k.type==="credit");
+  if(!found) {
+    logAction("ใช้คีย์ไม่สำเร็จ","คีย์ไม่ถูกต้องหรือใช้สิทธิ์ครบแล้ว");
+    input.value="";
+    return toast("คีย์ไม่ถูกต้องหรือถูกใช้ครบแล้ว");
+  }
+  found.remaining--;
+  changeBalance(currentUser,Number(found.value));
+  db.history.unshift({id:uid(),user:currentUser,type:"เติมเครดิต",detail:"รับเครดิตด้วยคีย์",amount:Number(found.value),time:Date.now()});
+  logAction("ใช้คีย์สำเร็จ","รับเครดิต "+found.value);
+  input.value="";
+  saveDB();renderAll();
+  showSuccess("รับเครดิตสำเร็จ","เพิ่ม "+money(found.value)+" เครดิตในกระเป๋าแล้ว");
+}
+function generateKeys() {
+  const amount=Math.floor(Number(document.getElementById("keyAmount").value));
+  const value=Math.floor(Number(document.getElementById("keyValue").value));
+  const uses=Math.floor(Number(document.getElementById("keyUses").value));
+  if(!Number.isInteger(amount)||amount<1||amount>1000)return toast("สร้างได้ 1–1000 คีย์ต่อครั้ง");
+  if(!Number.isFinite(value)||value<1)return toast("จำนวนเครดิตไม่ถูกต้อง");
+  if(!Number.isInteger(uses)||uses<1||uses>1000)return toast("จำนวนผู้ใช้ไม่ถูกต้อง");
+  const created=[];
+  for(let i=0;i<amount;i++) {
+    let key;
+    do{key=randomKey(20)}while(db.keys.some(k=>k.key===key));
+    db.keys.push({id:uid(),key,value,remaining:uses,initialUses:uses,type:"credit",created:Date.now()});
+    created.push(key);
+  }
+  document.getElementById("generatedKeys").innerHTML=
+    `<p class="good">สร้าง ${created.length} คีย์สำเร็จ</p><textarea readonly>${esc(created.join("\n"))}</textarea>`;
+  logAction("สร้างคีย์","สร้าง "+amount+" คีย์");
+  saveDB();
+  toast("สร้างคีย์สำเร็จ");
+}
+function copyAllKeys() {
+  const keys=db.keys.filter(k=>k.type==="credit"&&k.remaining>0).map(k=>k.key);
+  if(!keys.length)return toast("ไม่มีคีย์ที่เหลือสิทธิ์");
+  copyToClipboard(keys.join("\n"));
+}
+function exportKeys() {
+  const keys=db.keys.filter(k=>k.type==="credit").map(k=>k.key);
+  downloadText("pc-zone-keys.txt",keys.join("\n"));
+}
+function downloadText(name,text) {
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=name;a.click();
+  URL.revokeObjectURL(url);
+}
+function createEventKey() {
+  const value=Math.floor(Number(document.getElementById("eventValue").value));
+  const hours=Number(document.getElementById("eventHours").value);
+  if(!Number.isFinite(value)||value<1||!Number.isFinite(hours)||hours<1)return toast("กรุณาตรวจสอบข้อมูล");
+  let key;
+  do{key=randomKey(22)}while(db.keys.some(k=>k.key===key));
+  db.event={key,value,until:Date.now()+hours*3600000,claimed:[]};
+  db.keys.push({id:uid(),key,value,remaining:1,initialUses:1,type:"event",created:Date.now(),expires:db.event.until});
+  saveDB();renderEvent();
+  document.getElementById("adminEventInfo").innerHTML=`<div class="item"><b>คีย์กิจกรรม</b><p>${esc(key)}</p><button onclick="copyToClipboard('${key}')">คัดลอกคีย์</button><p>หมดอายุ ${new Date(db.event.until).toLocaleString("th-TH")}</p></div>`;
+  logAction("สร้างคีย์กิจกรรม","เครดิต "+value);
+  toast("สร้างคีย์กิจกรรมแล้ว");
+}
+function renderEvent() {
+  const area=document.getElementById("eventKeyArea");
+  if(db.event.key&&db.event.until>Date.now()) {
+    area.innerHTML=`<div class="item"><b>🎁 กิจกรรมพิเศษ</b><p>รับ ${money(db.event.value)} เครดิต</p><p class="muted">เหลือเวลา <span id="eventCountdown"></span></p><button class="primary" onclick="claimEventKey()">รับคีย์กิจกรรม</button></div>`;
+  } else {
+    area.innerHTML='<p class="muted">ขณะนี้ไม่มีคีย์กิจกรรมที่เปิดใช้งาน</p>';
+  }
+}
+function claimEventKey() {
+  if(!db.event.key||db.event.until<=Date.now())return toast("กิจกรรมหมดเวลาแล้ว");
+  const k=db.keys.find(x=>x.key===db.event.key);
+  if(!k||k.remaining<1)return toast("คีย์กิจกรรมถูกใช้แล้ว");
+  k.remaining=0;
+  changeBalance(currentUser,Number(k.value));
+  db.event.claimed.push(currentUser);
+  db.history.unshift({id:uid(),user:currentUser,type:"กิจกรรม",detail:"รับคีย์กิจกรรม",amount:Number(k.value),time:Date.now()});
+  logAction("รับคีย์กิจกรรม","เครดิต "+k.value);
+  saveDB();renderAll();
+  showSuccess("รับรางวัลสำเร็จ","เพิ่ม "+money(k.value)+" เครดิตแล้ว");
+}
+function saveProduct() {
+  const id=document.getElementById("editProductId").value;
+  const name=document.getElementById("pName").value.trim();
+  const price=Number(document.getElementById("pPrice").value);
+  const stock=Math.floor(Number(document.getElementById("pStock").value));
+  if(!name)return toast("กรุณาใส่ชื่อสินค้า");
+  if(!Number.isFinite(price)||price<0)return toast("ราคาไม่ถูกต้อง");
+  if(!Number.isInteger(stock)||stock<0)return toast("จำนวนสต๊อกไม่ถูกต้อง");
+  const p={
+    id:id||uid(),name,price,stock,
+    desc:document.getElementById("pDesc").value.trim(),
+    image:document.getElementById("pImage").value.trim(),
+    link1:document.getElementById("pLink1").value.trim(),
+    link2:document.getElementById("pLink2").value.trim(),
+    key1:document.getElementById("pKey1").value.trim(),
+    key2:document.getElementById("pKey2").value.trim(),
+    autoStock:document.getElementById("pAutoStock").checked
+  };
+  const index=db.products.findIndex(x=>x.id===id);
+  if(index>=0)db.products[index]=p;else db.products.push(p);
+  saveDB();clearProductForm();renderAll();
+  logAction(index>=0?"แก้ไขสินค้า":"เพิ่มสินค้า",name);
+  toast("บันทึกสินค้าแล้ว");
+}
+function clearProductForm() {
+  ["editProductId","pName","pDesc","pImage","pLink1","pLink2","pKey1","pKey2"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("pPrice").value=10;
+  document.getElementById("pStock").value=99;
+  document.getElementById("pAutoStock").checked=false;
+  document.getElementById("productFormTitle").textContent="➕ เพิ่มสินค้า";
+}
+function editProduct(id) {
+  const p=db.products.find(x=>x.id===id);if(!p)return;
+  document.getElementById("editProductId").value=p.id;
+  document.getElementById("pName").value=p.name;
+  document.getElementById("pDesc").value=p.desc||"";
+  document.getElementById("pPrice").value=p.price;
+  document.getElementById("pImage").value=p.image||"";
+  document.getElementById("pLink1").value=p.link1||"";
+  document.getElementById("pLink2").value=p.link2||"";
+  document.getElementById("pKey1").value=p.key1||"";
+  document.getElementById("pKey2").value=p.key2||"";
+  document.getElementById("pStock").value=p.stock;
+  document.getElementById("pAutoStock").checked=!!p.autoStock;
+  document.getElementById("productFormTitle").textContent="✏️ แก้ไขสินค้า";
+  document.getElementById("admin-products").scrollIntoView({behavior:"smooth"});
+}
+function deleteProduct(id) {
+  if(!confirm("ยืนยันลบสินค้านี้?"))return;
+  const p=db.products.find(x=>x.id===id);
+  db.products=db.products.filter(x=>x.id!==id);
+  saveDB();renderAll();logAction("ลบสินค้า",p?.name||id);
+}
+function renderAdminProducts() {
+  const el=document.getElementById("adminProductList");
+  el.innerHTML=db.products.map(p=>`<div class="item">
+    <div class="item-head"><b>${esc(p.name)}</b><span>${money(p.price)} เครดิต</span></div>
+    <small>สต๊อก ${money(p.stock)}</small>
+    <div class="row" style="margin-top:10px">
+      <button onclick="editProduct('${p.id}')">แก้ไข</button>
+      <button class="danger" onclick="deleteProduct('${p.id}')">ลบ</button>
+    </div>
+  </div>`).join("")||'<p class="muted">ไม่มีสินค้า</p>';
+}
+function saveDesign() {
+  db.settings.shopName=document.getElementById("sName").value.trim()||"PC ZONE PANEL";
+  db.settings.heroDescription=document.getElementById("sDesc").value;
+  db.settings.banner=document.getElementById("sBanner").value.trim();
+  db.settings.color=document.getElementById("sColor").value;
+  saveDB();renderDesign();toast("บันทึกการตกแต่งแล้ว");
+}
+function renderDesign() {
+  const s=db.settings;
+  document.getElementById("brandName").textContent=s.shopName;
+  document.getElementById("heroName").textContent=s.shopName.replace(/ PANEL$/,"");
+  document.getElementById("heroDescription").textContent=s.heroDescription||"ร้านค้าดิจิทัล";
+  document.getElementById("footerName").textContent=s.shopName;
+  document.documentElement.style.setProperty("--red",s.color||"#ff2438");
+  document.documentElement.style.setProperty("--red2",s.color||"#a90016");
+  const hero=document.querySelector(".hero");
+  if(s.banner) {
+    hero.style.backgroundImage=`linear-gradient(90deg,#080808ee,#08080880),url("${s.banner.replace(/["\\]/g,"")}")`;
+    hero.style.backgroundSize="cover";hero.style.backgroundPosition="center";
+  } else {
+    hero.style.backgroundImage="";
+  }
+}
+function startMaintenance() {
+  const amount=Number(document.getElementById("mDuration").value);
+  const unit=Number(document.getElementById("mUnit").value);
+  const secret=document.getElementById("mSecret").value;
+  if(!Number.isFinite(amount)||amount<=0)return toast("กรุณากำหนดระยะเวลา");
+  if(!secret)return toast("กรุณากำหนดรหัสลับ");
+  db.maintenance={
+    active:true,until:Date.now()+amount*unit*1000,
+    message:document.getElementById("mMessage").value||"ปิดปรับปรุงเว็บไซต์",
+    secret
+  };
+  maintenanceBypass=false;
+  saveDB();logAction("เปิดโหมดปิดปรับปรุง","จนถึง "+new Date(db.maintenance.until).toLocaleString());
+  updateMaintenance();
+  toast("เปิดโหมดปิดปรับปรุงแล้ว");
+}
+function endMaintenance() {
+  db.maintenance.active=false;
+  saveDB();updateMaintenance();
+  logAction("ปิดโหมดปรับปรุง","ผู้ดูแลปิดด้วยตนเอง");
+  toast("ปิดโหมดปรับปรุงแล้ว");
+}
+function updateMaintenance() {
+  const m=db.maintenance;
+  if(m.active&&m.until<=Date.now()) {
+    m.active=false;saveDB();
+    logAction("หมดเวลาปิดปรับปรุง","ระบบเปิดเว็บไซต์อัตโนมัติ");
+  }
+  const show=m.active&&!maintenanceBypass;
+  document.getElementById("maintenance").style.display=show?"flex":"none";
+  document.getElementById("main").style.visibility=show?"hidden":"visible";
+  document.querySelector("header").style.visibility=show?"hidden":"visible";
+  document.querySelector("footer").style.visibility=show?"hidden":"visible";
+  if(show) {
+    document.getElementById("maintenanceMessage").textContent=m.message;
+    const left=Math.max(0,m.until-Date.now());
+    const h=Math.floor(left/3600000);
+    const min=Math.floor(left%3600000/60000);
+    const sec=Math.floor(left%60000/1000);
+    document.getElementById("countdown").textContent=
+      String(h).padStart(2,"0")+":"+String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+    document.getElementById("maintenanceStatus").textContent=
+      "กำลังปิดปรับปรุงจนถึง "+new Date(m.until).toLocaleString("th-TH");
+  } else {
+    document.getElementById("maintenanceStatus").textContent=m.active?"ผู้ดูแลข้ามหน้าปรับปรุงแล้ว":"ไม่ได้เปิดโหมดปิดปรับปรุง";
+  }
+}
+function openMaintenanceLogin() {
+  document.getElementById("maintenanceLoginArea").classList.remove("hidden");
+}
+function bypassMaintenance() {
+  const input=document.getElementById("maintenancePassword");
+  const status=document.getElementById("maintenanceLoginStatus");
+  const supplied=input.value;
+  status.textContent="กำลังตรวจสอบ...";
+  setTimeout(()=>{
+    if(supplied&&supplied===db.maintenance.secret) {
+      maintenanceBypass=true;
+      status.innerHTML='<div class="success-icon">✓</div><p class="good">ยืนยันสำเร็จ</p>';
+      logAction("ข้ามหน้าปรับปรุง","ยืนยันรหัสลับสำเร็จ");
+      setTimeout(()=>{updateMaintenance();toast("เข้าสู่เว็บไซต์แล้ว");},600);
+    } else {
+      status.innerHTML='<div style="font-size:35px;color:#ff2438">✕</div><p>รหัสไม่ถูกต้อง</p>';
+      input.value="";
+    }
+  },5000);
+}
+function openLogin() {
+  document.getElementById("adminPasswordInput").value="";
+  openModal("loginModal");
+}
+function loginAdmin() {
+  const password=document.getElementById("adminPasswordInput").value;
+  const button=document.querySelector("#loginModal .primary");
+  button.disabled=true;button.textContent="กำลังตรวจสอบ...";
+  setTimeout(()=>{
+    button.disabled=false;button.textContent="ยืนยัน";
+    if(password===db.settings.adminPassword) {
+      adminLoggedIn=true;closeModal("loginModal");
+      logAction("เข้าสู่ระบบแอดมิน","เข้าสู่แผงควบคุม");
+      openPage("admin");showSuccess("เข้าสู่ระบบสำเร็จ","ยินดีต้อนรับผู้ดูแล");
+    } else {
+      toast("รหัสผ่านไม่ถูกต้อง");
+    }
+  },5000);
+}
+function changeAdminPassword() {
+  const pass=document.getElementById("newAdminPassword").value;
+  if(pass.length<6)return toast("รหัสใหม่ต้องมีอย่างน้อย 6 ตัวอักษร");
+  db.settings.adminPassword=pass;
+  saveDB();document.getElementById("newAdminPassword").value="";
+  logAction("เปลี่ยนรหัสแอดมิน","เปลี่ยนรหัสผ่าน");
+  toast("เปลี่ยนรหัสแล้ว");
+}
+function adminTab(name,button) {
+  document.querySelectorAll(".admin-panel").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("admin-"+name).classList.remove("hidden");
+  document.querySelectorAll("#adminTabs button").forEach(x=>x.classList.remove("active"));
+  button.classList.add("active");
+  if(name==="products")renderAdminProducts();
+  if(name==="users")renderUsers();
+  if(name==="wheel")renderAdminPrizes();
+  if(name==="logs")renderLogs();
+  if(name==="maintenance")updateMaintenance();
+  if(name==="keys")renderEvent();
+}
+function renderAdmin() {
+  renderAdminProducts();renderUsers();renderAdminPrizes();renderLogs();
+  document.getElementById("sName").value=db.settings.shopName;
+  document.getElementById("sDesc").value=db.settings.heroDescription;
+  document.getElementById("sBanner").value=db.settings.banner;
+  document.getElementById("sColor").value=db.settings.color;
+  document.getElementById("currentUsername").value=currentUser;
+  document.getElementById("startingCredits").value=db.settings.startingCredits;
+  updateMaintenance();
+}
+function saveStartingCredits() {
+  const v=Number(document.getElementById("startingCredits").value);
+  if(!Number.isFinite(v)||v<0)return toast("เครดิตไม่ถูกต้อง");
+  db.settings.startingCredits=v;saveDB();toast("บันทึกเครดิตเริ่มต้นแล้ว");
+}
+function isBanned(user) {
+  return Number(db.bans[user]||0)>Date.now();
+}
+function banUser() {
+  const name=document.getElementById("banName").value.trim();
+  const sec=Number(document.getElementById("banSeconds").value);
+  if(!name||!Number.isFinite(sec)||sec<1)return toast("กรุณาตรวจสอบชื่อและเวลา");
+  db.bans[name]=Date.now()+sec*1000;
+  saveDB();logAction("แบนผู้ใช้",name+" เป็นเวลา "+sec+" วินาที");
+  renderUsers();toast("แบนผู้ใช้แล้ว");
+}
+function unbanUser(name) {
+  delete db.bans[name];saveDB();
+  logAction("ปลดแบนผู้ใช้",name);renderUsers();
+}
+function renderUsers() {
+  const el=document.getElementById("adminUserList");
+  if(!el)return;
+  const query=(document.getElementById("userSearch")?.value||"").toLowerCase();
+  const users=Object.keys(db.users).filter(x=>x.toLowerCase().includes(query));
+  el.innerHTML=users.map(name=>{
+    const u=db.users[name]||{};
+    const ban=isBanned(name);
+    return `<div class="item">
+      <b>${esc(name)}</b> <span class="${ban?"":"good"}">${ban?"ถูกแบน":"ปกติ"}</span>
+      <p>เครดิต ${money(db.wallets[name]||0)}</p>
+      <small>สมัคร ${u.created?new Date(u.created).toLocaleString("th-TH"):"-"}</small>
+      <div><small>อุปกรณ์: ${esc(u.device||"ไม่ทราบ")}</small></div>
+      ${ban?`<button class="full" onclick="unbanUser('${esc(name)}')">ปลดแบน</button>`:
+      `<button class="danger full" onclick="document.getElementById('banName').value='${esc(name)}';document.getElementById('banSeconds').value=100">เลือกเพื่อแบน</button>`}
+    </div>`;
+  }).join("")||'<p class="muted">ไม่พบผู้ใช้</p>';
+}
+function showBanScreen() {
+  const until=db.bans[currentUser]||0;
+  const overlay=document.getElementById("maintenance");
+  overlay.style.display="flex";
+  document.getElementById("maintenanceMessage").textContent="บัญชีนี้ถูกระงับการใช้งานชั่วคราว";
+  document.getElementById("maintenanceLoginArea").classList.add("hidden");
+  document.getElementById("countdown").textContent="กำลังตรวจสอบสถานะ...";
+  const update=()=>{
+    const left=Math.max(0,until-Date.now());
+    document.getElementById("countdown").textContent=
+      Math.ceil(left/1000)+" วินาที";
+    if(left<=0){clearInterval(timer);overlay.style.display="none";toast("ปลดแบนแล้ว");}
+  };
+  update();
+  const timer=setInterval(update,1000);
+}
+function addPrize() {
+  const name=document.getElementById("prizeName").value.trim();
+  const value=Number(document.getElementById("prizeValue").value);
+  const chance=Number(document.getElementById("prizeChance").value);
+  if(!name||!Number.isFinite(value)||value<0||!Number.isFinite(chance)||chance<0||chance>100)return toast("กรุณาตรวจสอบข้อมูลรางวัล");
+  db.wheelPrizes.push({id:uid(),name,value,chance});
+  saveDB();renderAdminPrizes();renderWheel();
+  logAction("เพิ่มรางวัลวงล้อ",name);
+  document.getElementById("prizeName").value="";
+  toast("เพิ่มรางวัลแล้ว");
+}
+function deletePrize(id) {
+  db.wheelPrizes=db.wheelPrizes.filter(p=>p.id!==id);
+  saveDB();renderAdminPrizes();renderWheel();
+}
+function renderAdminPrizes() {
+  const el=document.getElementById("adminPrizeList");
+  if(!el)return;
+  el.innerHTML=db.wheelPrizes.map(p=>`<div class="item">
+    <b>${esc(p.name)}</b><p>${money(p.value)} เครดิต • โอกาส ${p.chance}%</p>
+    <button class="danger" onclick="deletePrize('${p.id}')">ลบรางวัล</button>
+  </div>`).join("")||'<p>ไม่มีรางวัล</p>';
+}
+function saveSpinSettings() {
+  const n=Math.floor(Number(document.getElementById("dailySpins").value));
+  if(!Number.isInteger(n)||n<1||n>100)return toast("กำหนดสิทธิ์ได้ 1–100 ครั้งต่อวัน");
+  db.settings.dailySpins=n;saveDB();renderWheel();toast("บันทึกแล้ว");
+}
+function renderWheel() {
+  const el=document.getElementById("prizeList");
+  el.innerHTML=db.wheelPrizes.map(p=>`<div class="item">${esc(p.name)} — ${money(p.value)} เครดิต <small>(${p.chance}%)</small></div>`).join("")||'<p>ยังไม่มีรางวัล</p>';
+  const today=new Date().toLocaleDateString("en-CA");
+  const record=db.wheelHistory[currentUser]||{date:today,count:0};
+  const count=record.date===today?record.count:0;
+  document.getElementById("wheelInfo").textContent=
+    `ใช้สิทธิ์แล้ว ${count}/${db.settings.dailySpins} ครั้งวันนี้`;
+  document.getElementById("spinButton").disabled=wheelBusy||count>=db.settings.dailySpins;
+}
+function spinWheel() {
+  if(wheelBusy)return;
+  const today=new Date().toLocaleDateString("en-CA");
+  let rec=db.wheelHistory[currentUser]||{date:today,count:0};
+  if(rec.date!==today)rec={date:today,count:0};
+  if(rec.count>=db.settings.dailySpins)return toast("ใช้สิทธิ์หมุนวันนี้ครบแล้ว");
+  const prizes=db.wheelPrizes.filter(p=>Number(p.chance)>0);
+  const total=prizes.reduce((a,p)=>a+Number(p.chance),0);
+  if(!prizes.length||total<=0)return toast("ยังไม่ได้ตั้งค่ารางวัล");
+  let n=Math.random()*total;
+  let winner=prizes[prizes.length-1];
+  for(const p of prizes){n-=Number(p.chance);if(n<=0){winner=p;break;}}
+  wheelBusy=true;
+  document.getElementById("spinButton").disabled=true;
+  const wheel=document.getElementById("wheel");
+  const rotation=1800+Math.random()*720;
+  wheel.style.transform=`rotate(${rotation}deg)`;
+  sound();
+  setTimeout(()=>{
+    rec.count++;db.wheelHistory[currentUser]=rec;
+    changeBalance(currentUser,Number(winner.value));
+    db.history.unshift({id:uid(),user:currentUser,type:"วงล้อ",detail:winner.name,amount:Number(winner.value),time:Date.now()});
+    logAction("หมุนวงล้อ",winner.name);
+    saveDB();wheelBusy=false;
+    document.getElementById("wheelResult").innerHTML=
+      `<div class="success-icon">✓</div><h3>คุณได้รับ ${esc(winner.name)}</h3><p>+${money(winner.value)} เครดิต</p>`;
+    renderWheel();renderHeader();
+  },3100);
+}
+function renderLogs() {
+  const el=document.getElementById("adminLogsList");
+  if(!el)return;
+  el.innerHTML=db.logs.slice(0,100).map(x=>`<div class="item">
+    <b>${esc(x.type)}</b><p>${esc(x.detail)}</p>
+    <small>${esc(x.user)} • ${new Date(x.time).toLocaleString("th-TH")}</small>
+  </div>`).join("")||'<p class="muted">ไม่มีบันทึก</p>';
+}
+function exportLogs() {
+  downloadText("pc-zone-logs.txt",db.logs.map(x=>
+    `${new Date(x.time).toISOString()} | ${x.user} | ${x.type} | ${x.detail}`
+  ).join("\n"));
+}
+function resetDemo() {
+  if(!confirm("ลบข้อมูลทดลองทั้งหมดและกลับไปค่าเริ่มต้น?"))return;
+  localStorage.removeItem(DBKEY);
+  location.reload();
+}
+function renderAll() {
+  renderHeader();renderProducts();renderMail();renderHistory();
+  renderDesign();renderEvent();renderWheel();
+  if(adminLoggedIn)renderAdmin();
+}
+function boot() {
+  getBalance();
+  db.settings.visitorCount++;
+  saveDB();
+  renderAll();
+  updateMaintenance();
+  setInterval(()=>{
+    updateMaintenance();
+    if(db.event.until&&db.event.until<=Date.now())renderEvent();
+  },1000);
+  document.addEventListener("click",e=>{
+    if(e.target.closest("button"))sound();
+  });
+  document.getElementById("adminPasswordInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter")loginAdmin();
+  });
+  document.getElementById("redeemInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter")redeemKey();
+  });
+}
+boot();
+</script>
+
+</body>
+</html>
